@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS 听力词汇听写</title>
-    <style>
+import re
+
+with open('index.html', 'r', encoding='utf-8') as f:
+    html = f.read()
+
+new_styles = """<style>
         :root {
             --bg: #F5F5F7;
             --sidebar-bg: rgba(245, 245, 247, 0.65);
@@ -160,84 +159,8 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
-    </style>
-</head>
-<body>
+    </style>"""
 
-<aside class="sidebar">
-    <div class="sidebar-header">IELTS 听力词汇</div>
-    <div id="chapter-list"></div>
-    <div class="sidebar-footer">
-        <button onclick="exportData()">导出备份</button>
-        <button onclick="importData()">导入恢复</button>
-    </div>
-</aside>
-
-<main class="main">
-    <div class="topbar">
-        <div class="topbar-left">
-            <div class="title" id="title">选择章节开始听写</div>
-            <div class="stats" id="stats" style="display:none">
-                <span class="pill g" id="s-ok">正确: 0</span>
-                <span class="pill r" id="s-ng">错误: 0</span>
-                <span class="pill" id="s-pct">正确率: 0%</span>
-            </div>
-        </div>
-        <div class="topbar-right">
-            <button class="history-btn" onclick="showHistoryPanel()">正确率记录</button>
-            <button class="err-btn" id="btn-errlog" onclick="showErrPanel()">错词本<span class="err-badge" id="err-badge" style="display:none">0</span></button>
-            <button class="toggle-btn" id="btn-hide-cn" onclick="toggleChinese()">隐藏中文</button>
-            <button class="submit-btn" id="btn-submit" onclick="submitAll()" disabled>提交检查</button>
-            <button class="restart-btn" id="btn-restart" onclick="restartPaper()">重新开始</button>
-        </div>
-    </div>
-    <div class="audio-bar" id="audio-bar">
-        <button class="audio-play" id="audio-play" onclick="togglePlay()" title="播放/暂停">▶</button>
-        <span class="audio-time" id="audio-time">0:00 / 0:00</span>
-        <input type="range" class="audio-seek" id="audio-seek" min="0" max="100" value="0" step="0.1" oninput="seekAudio(this.value)">
-        <div class="audio-speeds">
-            <button class="spd-btn active" onclick="setSpeed(1)">1x</button>
-            <button class="spd-btn" onclick="setSpeed(1.2)">1.2x</button>
-            <button class="spd-btn" onclick="setSpeed(1.4)">1.4x</button>
-            <button class="spd-btn" onclick="setSpeed(1.6)">1.6x</button>
-            <button class="spd-btn" onclick="setSpeed(1.8)">1.8x</button>
-        </div>
-    </div>
-    <div class="word-wrap" id="word-wrap">
-        <div class="empty">
-            <h2>请从左侧选择 Test Paper</h2>
-            <p>看中文，打英文，打完后点击「提交检查」</p>
-            <p style="font-size:12px;color:#bbb;margin-top:12px">进度自动保存到浏览器</p>
-        </div>
-    </div>
-</main>
-
-<!-- Error Word Panel -->
-<div class="err-overlay" id="err-overlay" onclick="if(event.target===this)hideErrPanel()">
-    <div class="err-panel">
-        <div class="err-panel-header">
-            <h2>错词本</h2>
-            <div style="display:flex;align-items:center;gap:8px">
-                <button class="err-export-btn" onclick="exportErrAsMarkdown()">导出Markdown</button>
-                <button class="err-clear-btn" onclick="clearAllErr()">一键清零</button>
-                <button class="err-close" onclick="hideErrPanel()">&times;</button>
-            </div>
-        </div>
-        <div class="err-panel-body" id="err-panel-body"></div>
-    </div>
-</div>
-
-<!-- Accuracy History Panel -->
-<div class="err-overlay" id="history-overlay" onclick="if(event.target===this)hideHistoryPanel()">
-    <div class="err-panel">
-        <div class="err-panel-header">
-            <h2>正确率记录</h2>
-            <button class="err-close" onclick="hideHistoryPanel()">&times;</button>
-        </div>
-        <div class="err-panel-body" id="history-panel-body"></div>
-    </div>
-</div>
-
-<script type="module" src="/src/main.ts"></script>
-</body>
-</html>
+html = re.sub(r'<style>.*?</style>', new_styles, html, flags=re.DOTALL)
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html)
