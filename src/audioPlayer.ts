@@ -77,7 +77,7 @@ export function loadAudio(ppId: string): void {
     audio.pause();
     audioReady = false;
     if (!src) { audioBar.classList.remove('show'); return; }
-    audio.src = encodeURI(src);
+    audio.src = encodeURI(import.meta.env.BASE_URL + src.substring(1));
     audio.load();
     audioBar.classList.add('show');
     audioPlayBtn.textContent = '▶';
