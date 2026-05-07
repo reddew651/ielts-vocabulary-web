@@ -1,0 +1,64 @@
+name: Build and Deploy
+
+# 这将使得当往 main 或 master 分支 push 代码时自动触发
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # 也允许在 GitHub 网页上手动点击按钮触发
+
+# 设置权限以允许推送到 GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Parse Words (Generate data.json)
+        # 执行你写好的脚本，自动把 1.txt 转成 public/data.json
+        run: python parse_words.py
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Source
+        # 执行 Vite 的打包命令，产出会被放在 dist 目录
+        run: npm run build
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
