@@ -40,9 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initApp() {
     try {
-        // In Vite, public files are served at the root
-        // Use base path configured in vite.config.ts
-        const res = await fetch('/data.json');
+        // Use BASE_URL from Vite config so it works on both dev and GitHub Pages
+        const res = await fetch(import.meta.env.BASE_URL + 'data.json');
         if (!res.ok) throw new Error('Network response was not ok');
         store.vocabData = await res.json();
     } catch (err) {
