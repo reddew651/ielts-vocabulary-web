@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initApp() {
     try {
         // In Vite, public files are served at the root
-        const res = await fetch('/data.json');
+        // Use relative path or base url so it works on GitHub Pages
+        const res = await fetch('./data.json');
         if (!res.ok) throw new Error('Network response was not ok');
         store.vocabData = await res.json();
     } catch (err) {
