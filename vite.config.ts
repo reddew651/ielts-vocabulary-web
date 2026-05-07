@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/ielts-vocabulary-web/',
+  base: process.env.NODE_ENV === 'production' 
+    ? '/ielts-vocabulary-web/' 
+    : '/',
 });
